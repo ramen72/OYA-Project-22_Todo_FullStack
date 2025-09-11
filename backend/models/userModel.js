@@ -10,6 +10,7 @@ const userSchema = new Schema({
   },
   password: String,
   refreshToken: String,
+  isVerified: Boolean,
 });
 
 module.exports = mongoose.model("User", userSchema);
