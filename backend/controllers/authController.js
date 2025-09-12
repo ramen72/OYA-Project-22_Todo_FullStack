@@ -85,7 +85,7 @@ let verifyTokenController = async (req, res) => {
       res.send({ error: `Invalid Token` });
     } else {
       userExists.isVerified = true;
-      userExists.save();
+      await userExists.save();
       res.send({
         message: `Congratulations! Your Email verification is Successfully Done.`,
       });
@@ -133,16 +133,17 @@ let loginController = async (req, res) => {
 
 // Refresh Controller
 let refreshController = async (req, res) => {
-  const token = req.cookie.refreshToken;
+  const token = req.cookies.refreshToken;
   if (!token) {
-    res.send(`No token found`);
+    // res.send(`No token found`);
+    res.status(401).json({ error: "No token found" });
   }
   const userExists = await User.findOne({ refreshToken: token });
   if (!userExists) {
     return res.send({ error: `Invalid Token` });
   }
 
-  jwt.verify(token.process.env.REFRESH_TOKEN, (err, decoded) => {
+  jwt.verify(token, process.env.REFRESH_TOKEN, (err, decoded) => {
     if (err) {
       return res.send({ error: `Invalid Token` });
     }
@@ -160,21 +161,26 @@ let forgotPasswordController = async (req, res) => {
   }
   const resetToken = jwt.sign(
     { id: userExists._id },
-    process.env.REFRESH_TOKEN,
+    process.env.ACCESS_SECRET,
     {
       expiresIn: "15m",
     }
   );
   const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-  await transporter.sendMail({
-    from: process.env.SENDING_MAIL_ID,
-    to: user.email,
-    subject: `Reset Password`,
-    html: `<h3>click to Reset Password : <a href=${verifyLink}>Reset Password</a></h3>`,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.SENDING_MAIL_ID,
+      to: userExists.email,
+      // to: user.email,
+      subject: `Reset Password`,
+      html: `<h3>click to Reset Password : <a href=${resetLink}>Reset Password</a></h3>`,
+    });
 
-  res.send({ message: `Please check your email for reset password.` });
+    res.send({ message: `Please check your email for reset password.` });
+  } catch (error) {
+    res.send({ error: error });
+  }
 };
 
 // Reset Password Controller
@@ -186,7 +192,7 @@ let resetPasswordController = async (req, res) => {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     const userExists = await User.findById(decoded.id);
     if (!userExists) {
-      res.send({ error: `Invalid token` });
+      return res.send({ error: `Invalid token` });
     }
     userExists.password = await bcryptjs.hash(password, 10);
     await userExists.save();
