@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 // **********************
 const patternForEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const patternForPassword =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,64}$/;
 let errors = {
   usernameError: "",
   emailError: "",
@@ -72,7 +72,7 @@ let registrationController = async (req, res) => {
   }
   // Password Validation
   if (!password) {
-    errors.password = "Password Required";
+    errors.passwordError = "Password Required";
   } else if (!patternForPassword.test(password)) {
     errors.passwordError = `Password minimum requirement Minimum length 8 characters, At least one lowercase letter, one uppercase letter, one digit, one special character among [@ $ ! % * ? &]`;
     return res.send(errors);
