@@ -23,6 +23,15 @@ const transporter = nodemailer.createTransport({
 // });
 
 // **********************
+const patternForEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const patternForPassword =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+let errors = {
+  usernameError: "",
+  emailError: "",
+  passwordError: "",
+  confirmPasswordError: "",
+};
 
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.ACCESS_SECRET, {
@@ -36,12 +45,46 @@ const generateRefreshToken = (user) => {
   });
 };
 
+// ******* Register Controller ********
 let registrationController = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
   const userExits = await User.findOne({ email: email });
   if (userExits) {
     return res.send(`"${email}" already Registered!`);
   }
+
+  // User Name Validation
+  if (!username) {
+    errors.username = "Username Required";
+    return res.send(errors);
+  } else if (username.length < 3 || username.length > 50) {
+    errors.usernameError = `Username must be between 3 - 50 char. Your Name length : ${username.length}`;
+    return res.send(errors);
+  }
+
+  // User Email Validation
+  if (!email) {
+    errors.emailError = "Email Required";
+    return res.send(errors);
+  } else if (!patternForEmail.test(email)) {
+    errors.emailError = "Please enter a valid Email";
+    return res.send(errors);
+  }
+  // Password Validation
+  if (!password) {
+    errors.password = "Password Required";
+  } else if (!patternForPassword.test(password)) {
+    errors.passwordError = `Password minimum requirement Minimum length 8 characters, At least one lowercase letter, one uppercase letter, one digit, one special character among [@ $ ! % * ? &]`;
+    return res.send(errors);
+  }
+  if (!confirmPassword) {
+    errors.confirmPassword = "ConfirmPassword Required";
+    return res.send(errors);
+  } else if (password !== confirmPassword) {
+    errors.confirmPasswordError = "ConfirmPassword Not match !";
+    return res.send(errors);
+  }
+
   const hashed = await bcryptjs.hash(password, 10);
   const user = new User({
     username: username,
