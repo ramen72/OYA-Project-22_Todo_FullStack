@@ -26,12 +26,6 @@ const transporter = nodemailer.createTransport({
 const patternForEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const patternForPassword =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,64}$/;
-let errors = {
-  usernameError: "",
-  emailError: "",
-  passwordError: "",
-  confirmPasswordError: "",
-};
 
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.ACCESS_SECRET, {
@@ -49,6 +43,12 @@ const generateRefreshToken = (user) => {
 let registrationController = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
   const userExits = await User.findOne({ email: email });
+  let errors = {
+    usernameError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+  };
   if (userExits) {
     return res.send(`"${email}" already Registered!`);
   }
