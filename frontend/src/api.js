@@ -5,6 +5,7 @@ const api = axios.create({
   //   baseURL: "http://localhost3000/api",
   baseURL: "https://jsonplaceholder.typicode.com",
   withCredentials: true, // this for send cookie permission
+  // timeout: 5000, // Why could not use "timeout" property?
 });
 
 let accessToken = null;
