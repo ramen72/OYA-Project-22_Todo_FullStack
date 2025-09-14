@@ -86,12 +86,10 @@ let registrationController = async (req, res) => {
   }
 
   const hashed = await bcryptjs.hash(password, 10);
-
   const user = new User({
     username: username,
     email: email,
     password: hashed,
-    passwordHistory: hashed,
     isVerified: false,
   });
   try {
@@ -239,17 +237,7 @@ let resetPasswordController = async (req, res) => {
     if (!userExists) {
       return res.send({ error: `Invalid token` });
     }
-
-    //   const isPasswordMatch = await bcryptjs.compare(password, userExists.password);
-    // if (!isPasswordMatch) {
-    //   return res.send({ error: `Invalid Credential` });
-    // }
-
     userExists.password = await bcryptjs.hash(password, 10);
-    userExists.passwordHistory = await userExists.passwordHistory.unshift(
-      bcryptjs.hash(password, 10)
-    );
-    console.log(userExists.passwordHistory);
     await userExists.save();
     res.send({ message: `Password reset successfully done.` });
   } catch (error) {

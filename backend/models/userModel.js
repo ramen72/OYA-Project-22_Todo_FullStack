@@ -7,8 +7,13 @@ const userSchema = new Schema({
     type: String,
     unique: true,
     require: true,
+    lowercase: true,
   },
-  password: String,
+  password: {
+    type: String,
+    require: true,
+  },
+  passwordHistory: [{ type: String }], // সর্বশেষ ৫টা পাসওয়ার্ড
   refreshToken: String,
   isVerified: Boolean,
 });
