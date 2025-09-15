@@ -234,16 +234,45 @@ let resetPasswordController = async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     const userExists = await User.findById(decoded.id);
+    let isPasswordUsedBefore = false;
 
-    console.log(userExists.passwordHistory);
     if (!userExists) {
       return res.send({ error: `Invalid token` });
+    }
+
+    // Password Validation
+    if (!password) {
+      errors.passwordError = "Password Required";
+    } else if (!patternForPassword.test(password)) {
+      errors.passwordError = `Password minimum requirement Minimum length 8 characters, At least one lowercase letter, one uppercase letter, one digit, one special character among [@ $ ! % * ? &]`;
+      return res.send(errors);
+    }
+    if (!confirmPassword) {
+      errors.confirmPassword = "ConfirmPassword Required";
+      return res.send(errors);
+    } else if (password !== confirmPassword) {
+      errors.confirmPasswordError = "ConfirmPassword Not match !";
+      return res.send(errors);
+    }
+
+    for (let oldPass of userExists.passwordHistory) {
+      const match = await bcryptjs.compare(password, oldPass);
+      if (match) {
+        isPasswordUsedBefore = true;
+        break;
+      }
     }
     // userExists.password = password;
     // userExists.passwordHistory.push(password);
 
-    userExists.password = await bcryptjs.hash(password, 10);
-    userExists.passwordHistory.push(await bcryptjs.hash(password, 10));
+    if (isPasswordUsedBefore) {
+      return res.send(
+        "Sorry! Your password should be differ than last 5 password."
+      );
+    } else {
+      userExists.password = await bcryptjs.hash(password, 10);
+      userExists.passwordHistory.push(await bcryptjs.hash(password, 10));
+    }
 
     if (userExists.passwordHistory.length > 5) {
       userExists.passwordHistory = userExists.passwordHistory.slice(-5);
