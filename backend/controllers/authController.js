@@ -236,6 +236,7 @@ let resetPasswordController = async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     const userExists = await User.findById(decoded.id);
+    console.log(decoded);
     if (!userExists) {
       return res.send({ error: `Invalid token` });
     }
@@ -246,8 +247,8 @@ let resetPasswordController = async (req, res) => {
     // }
 
     userExists.password = await bcryptjs.hash(password, 10);
-    userExists.passwordHistory = await userExists.passwordHistory.unshift(
-      bcryptjs.hash(password, 10)
+    userExists.passwordHistory = userExists.passwordHistory.unshift(
+      await bcryptjs.hash(password, 10)
     );
     console.log(userExists.passwordHistory);
     await userExists.save();
