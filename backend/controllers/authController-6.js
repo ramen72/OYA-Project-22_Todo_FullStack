@@ -86,6 +86,7 @@ let registrationController = async (req, res) => {
   }
 
   const hashed = await bcryptjs.hash(password, 10);
+
   const user = new User({
     username: username,
     email: email,
@@ -109,6 +110,7 @@ let registrationController = async (req, res) => {
       subject: `${user.email} Please Verify your Email`,
       text: "Hello", // plain‑text body
       html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
+      // html: `<h2>Your Verification Code is ${verificationCode}</h2> <br> <a href='#'>Click</a>`, // HTML body
     });
     res.send({
       message: `Registration Successfully Done. Please check your mail for verification code.`,
@@ -168,10 +170,9 @@ let loginController = async (req, res) => {
 
   res.send({
     message: "Login Successful",
+    accessToken: accessToken,
     username: userExists.username,
     email: userExists.email,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
   });
 };
 
@@ -179,6 +180,7 @@ let loginController = async (req, res) => {
 let refreshController = async (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) {
+    // res.send(`No token found`);
     res.status(401).json({ error: "No token found" });
   }
   const userExists = await User.findOne({ refreshToken: token });
@@ -234,21 +236,21 @@ let resetPasswordController = async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     const userExists = await User.findById(decoded.id);
-
-    console.log(userExists.passwordHistory);
+    console.log(decoded);
     if (!userExists) {
       return res.send({ error: `Invalid token` });
     }
-    // userExists.password = password;
-    // userExists.passwordHistory.push(password);
+
+    //   const isPasswordMatch = await bcryptjs.compare(password, userExists.password);
+    // if (!isPasswordMatch) {
+    //   return res.send({ error: `Invalid Credential` });
+    // }
 
     userExists.password = await bcryptjs.hash(password, 10);
-    userExists.passwordHistory.push(await bcryptjs.hash(password, 10));
-
-    if (userExists.passwordHistory.length > 5) {
-      userExists.passwordHistory = userExists.passwordHistory.slice(-5);
-    }
-
+    userExists.passwordHistory = userExists.passwordHistory.unshift(
+      await bcryptjs.hash(password, 10)
+    );
+    console.log(userExists.passwordHistory);
     await userExists.save();
     res.send({ message: `Password reset successfully done.` });
   } catch (error) {
