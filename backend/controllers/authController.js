@@ -209,6 +209,7 @@ let forgotPasswordController = async (req, res) => {
       expiresIn: "15m",
     }
   );
+  console.log(resetToken);
   const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
   try {
@@ -230,6 +231,12 @@ let forgotPasswordController = async (req, res) => {
 let resetPasswordController = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+  let errors = {
+    usernameError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+  };
 
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
@@ -241,19 +248,19 @@ let resetPasswordController = async (req, res) => {
     }
 
     // Password Validation
-    if (!password) {
-      errors.passwordError = "Password Required";
-    } else if (!patternForPassword.test(password)) {
-      errors.passwordError = `Password minimum requirement Minimum length 8 characters, At least one lowercase letter, one uppercase letter, one digit, one special character among [@ $ ! % * ? &]`;
-      return res.send(errors);
-    }
-    if (!confirmPassword) {
-      errors.confirmPassword = "ConfirmPassword Required";
-      return res.send(errors);
-    } else if (password !== confirmPassword) {
-      errors.confirmPasswordError = "ConfirmPassword Not match !";
-      return res.send(errors);
-    }
+    // if (!password) {
+    //   errors.passwordError = "Password Required";
+    // } else if (!patternForPassword.test(password)) {
+    //   errors.passwordError = `Password minimum requirement Minimum length 8 characters, At least one lowercase letter, one uppercase letter, one digit, one special character among [@ $ ! % * ? &]`;
+    //   return res.send(errors);
+    // }
+    // if (!confirmPassword) {
+    //   errors.confirmPassword = "ConfirmPassword Required";
+    //   return res.send(errors);
+    // } else if (password !== confirmPassword) {
+    //   errors.confirmPasswordError = "ConfirmPassword Not match !";
+    //   return res.send(errors);
+    // }
 
     for (let oldPass of userExists.passwordHistory) {
       const match = await bcryptjs.compare(password, oldPass);
@@ -262,13 +269,11 @@ let resetPasswordController = async (req, res) => {
         break;
       }
     }
-    // userExists.password = password;
-    // userExists.passwordHistory.push(password);
 
     if (isPasswordUsedBefore) {
-      return res.send(
-        "Sorry! Your password should be differ than last 5 password."
-      );
+      return res.send({
+        error: "Sorry! Your password should be differ than last 5 password.",
+      });
     } else {
       userExists.password = await bcryptjs.hash(password, 10);
       userExists.passwordHistory.push(await bcryptjs.hash(password, 10));
@@ -279,8 +284,10 @@ let resetPasswordController = async (req, res) => {
     }
 
     await userExists.save();
+    // return res.send(errors);
     res.send({ message: `Password reset successfully done.` });
   } catch (error) {
+    // return res.send(errors);
     res.send({ error: `Token invalid or expired.` });
   }
 };

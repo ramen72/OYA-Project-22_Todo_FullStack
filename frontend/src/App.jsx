@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "./assets/css/tailwind.css";
 import api from "./api";
 
