@@ -1,5 +1,6 @@
 import "./assets/css/tailwind.css";
 import api from "./api";
+import { useEffect } from "react";
 
 function App() {
   useEffect(() => {

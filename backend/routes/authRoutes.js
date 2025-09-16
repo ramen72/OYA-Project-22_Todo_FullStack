@@ -10,7 +10,7 @@ const {
 } = require("../controllers/authController");
 
 router.post("/registration", registrationController);
-router.post("/verify/:token", verifyTokenController);
+router.get("/verify/:token", verifyTokenController);
 router.post("/login", loginController);
 router.post("/refresh", refreshController);
 router.post("/forgot-password", forgotPasswordController);
