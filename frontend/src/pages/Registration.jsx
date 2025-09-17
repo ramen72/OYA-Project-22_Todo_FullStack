@@ -9,10 +9,10 @@ const Registration = () => {
     password: "",
   });
   const dispatch = useDispatch();
-  const { mesage, error } = useSelector((state) => state.auth);
+  const { message, error } = useSelector((state) => state.auth);
 
   const handleSubmit = () => {
-    dispatch(Registration);
+    dispatch(registration(formData));
   };
 
   return (
