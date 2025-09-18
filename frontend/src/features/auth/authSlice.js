@@ -1,14 +1,11 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import * as authAPI from "./authApi";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import * as authApi from "./authApi";
 
-// const initialState = {
-//   value: 0,
-// };
 export const registration = createAsyncThunk(
   "auth/register",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await authAPI.registration(data);
+      const res = await authApi.registration(data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -20,10 +17,14 @@ export const login = createAsyncThunk(
   "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await authAPI.login(data);
+      const res = await authApi.login(data);
       return res.data;
     } catch (error) {
-      return rejectWithValue(error);
+      // return rejectWithValue(error);
+      return rejectWithValue({
+        message: error.response?.data?.message || error.message,
+        status: error.response?.status,
+      });
     }
   }
 );
@@ -32,7 +33,7 @@ export const verify = createAsyncThunk(
   "auth/verify",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await authAPI.verifyEmail(data);
+      const res = await authApi.verifyEmail(data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -44,7 +45,7 @@ export const forgot = createAsyncThunk(
   "auth/forgot",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await authAPI.forgotPassword(data);
+      const res = await authApi.forgotPassword(data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -56,7 +57,7 @@ export const reset = createAsyncThunk(
   "auth/reset",
   async ({ token, data }, { rejectWithValue }) => {
     try {
-      const res = await authAPI.resetPassword(token, data);
+      const res = await authApi.resetPassword(token, data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -69,7 +70,7 @@ export const authSlice = createSlice({
   initialState: {
     user: null,
     accessToken: null,
-    loading: false,
+    loading: null,
     error: null,
     message: null,
   },
@@ -85,28 +86,29 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = {
-          email: action.payload.email,
-          userName: action.payload.userName,
-        };
+        (state.loading = true)(
+          (state.user = {
+            email: action.payload.email,
+            username: action.payload.username,
+          })
+        );
         state.accessToken = action.payload.accessToken;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.error;
       })
-      .addCase(registration.fulfilled, (state, action) => {
-        state.message = action.payload.message;
+      .addCase(registration.fulfilled, (stat, action) => {
+        stat.message = action.payload.message;
       })
-      .addCase(verify.fulfilled, (state, action) => {
-        state.message = action.payload.message;
+      .addCase(verify.fulfilled, (stat, action) => {
+        stat.message = action.payload.message;
       })
-      .addCase(forgot.fulfilled, (state, action) => {
-        state.message = action.payload.message;
+      .addCase(forgot.fulfilled, (stat, action) => {
+        stat.message = action.payload.message;
       })
-      .addCase(reset.fulfilled, (state, action) => {
-        state.message = action.payload.message;
+      .addCase(reset.fulfilled, (stat, action) => {
+        stat.message = action.payload.message;
       });
   },
 });

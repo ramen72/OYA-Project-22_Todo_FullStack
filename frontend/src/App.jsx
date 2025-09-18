@@ -9,11 +9,11 @@ import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
-  useEffect(() => {
-    api.get(`/users`).then((data) => {
-      console.log(data.data);
-    });
-  });
+  // useEffect(() => {
+  //   api.get(`/users`).then((data) => {
+  //     // console.log(data.data);
+  //   });
+  // });
   return (
     <>
       <Routes>
