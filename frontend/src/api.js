@@ -2,7 +2,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const api = axios.create({
-  baseURL: "http://localhost3000/api",
+  baseURL: "http://localhost:3000/api",
   withCredentials: true, // this for send cookie permission
   // timeout: 5000, // Why could not use "timeout" property?
 });

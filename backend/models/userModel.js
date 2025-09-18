@@ -13,6 +13,10 @@ const userSchema = new Schema({
     type: String,
     require: true,
   },
+  confirmPassword: {
+    type: String,
+    require: true,
+  },
   passwordHistory: [{ type: String }], // সর্বশেষ ৫টা পাসওয়ার্ড
   refreshToken: String,
   isVerified: Boolean,

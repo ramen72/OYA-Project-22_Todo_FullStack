@@ -7,6 +7,7 @@ const Registration = () => {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const dispatch = useDispatch();
   const { message, error } = useSelector((state) => state.auth);
@@ -71,6 +72,22 @@ const Registration = () => {
             placeholder="Enter your password here..."
           />
         </div>
+        <div>
+          <label
+            htmlFor="confirmPassword"
+            className={`inline-block w-1/4 font-bold text-xl text-right capitalize`}
+          >
+            Confirm Password :
+          </label>
+          <input
+            className={`border ml-5 p-2 my-1 w-3/5`}
+            type="password"
+            onChange={(e) =>
+              setFormData({ ...formData, confirmPassword: e.target.value })
+            }
+            placeholder="Enter your password here..."
+          />
+        </div>
         <div className={`flex justify-end items-center mt-3`}>
           <button
             type="submit"
@@ -101,6 +118,14 @@ const Registration = () => {
           type="password"
           onChange={(e) =>
             setFormData({ ...formData, password: e.target.value })
+          }
+          placeholder="Enter your password here..."
+        />
+        <input
+          className={`border ml-5 p-2 my-1 w-3/5`}
+          type="password"
+          onChange={(e) =>
+            setFormData({ ...formData, confirmPassword: e.target.value })
           }
           placeholder="Enter your password here..."
         />
