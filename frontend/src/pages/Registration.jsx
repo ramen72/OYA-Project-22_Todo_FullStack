@@ -19,7 +19,7 @@ const Registration = () => {
   return (
     <>
       <h1 className={`font-bold text-2xl text-center mb-6`}>Registration</h1>
-      {/* <form
+      <form
         action="POST"
         onSubmit={handleSubmit}
         className={`w-1/2 p-10 mt-10 mx-auto bg-gray-200 rounded`}
@@ -96,46 +96,7 @@ const Registration = () => {
             submit
           </button>
         </div>
-      </form> */}
-
-      <div>
-        <input
-          className={`border ml-5 p-2 my-1 w-3/5`}
-          type="text"
-          onChange={(e) =>
-            setFormData({ ...formData, username: e.target.value })
-          }
-          placeholder="Enter your userName here..."
-        />
-        <input
-          className={`border ml-5 p-2 my-1 w-3/5`}
-          type="email"
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          placeholder="Enter your email here..."
-        />
-        <input
-          className={`border ml-5 p-2 my-1 w-3/5`}
-          type="password"
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-          placeholder="Enter your password here..."
-        />
-        <input
-          className={`border ml-5 p-2 my-1 w-3/5`}
-          type="password"
-          onChange={(e) =>
-            setFormData({ ...formData, confirmPassword: e.target.value })
-          }
-          placeholder="Enter your password here..."
-        />
-        <button
-          onClick={handleSubmit}
-          className={`bg-blue-500 px-5 py-3 text-white font-bold text-lg capitalize rounded-lg mr-20 cursor-pointer hover:bg-blue-600`}
-        >
-          submit
-        </button>
-      </div>
+      </form>
     </>
   );
 };
