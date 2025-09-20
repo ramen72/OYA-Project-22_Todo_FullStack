@@ -57,7 +57,9 @@ export const reset = createAsyncThunk(
   "auth/reset",
   async ({ token, data }, { rejectWithValue }) => {
     try {
-      const res = await authApi.resetPassword(token, data);
+      const res = await authApi.resetPassword(token, {
+        password: data.password,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -86,12 +88,12 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
-        (state.loading = true)(
-          (state.user = {
-            email: action.payload.email,
-            username: action.payload.username,
-          })
-        );
+        state.loading = false;
+        state.message = "error";
+        state.user = {
+          email: action.payload.email,
+          username: action.payload.username,
+        };
         state.accessToken = action.payload.accessToken;
       })
       .addCase(login.rejected, (state, action) => {
