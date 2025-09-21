@@ -1,3 +1,5 @@
+const fs = require("fs"); // Add this at the top
+const path = require("path");
 const todoModel = require("../models/todoModel");
 
 // ******************************* Create Todo Controller *************************************************************
@@ -51,7 +53,9 @@ let updateTodo = async (req, res) => {
       userDetails: userId,
     });
 
-    if (!todo) return res.send({ error: `Todo not found..!` });
+    if (!todo) {
+      return res.send({ error: `Todo not found..!` });
+    }
     if (text) {
       todo.text = text;
     }
