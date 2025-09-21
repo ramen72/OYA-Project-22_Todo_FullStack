@@ -41,19 +41,22 @@ let getAllTodos = async (req, res) => {
 
 // ******************************* Todo Update controller *************************************************************
 let updateTodo = async (req, res) => {
-  let updateId = req.params;
+  let updateId = req.params.id;
   let userId = req.userInfo.id;
+
   try {
     const { text } = req.body;
-    const todo = await todoModel.findOne({ _id: updateId, userId: userId });
+    const todo = await todoModel.findOne({
+      _id: updateId,
+      userDetails: userId,
+    });
+
     if (!todo) return res.send({ error: `Todo not found..!` });
     if (text) {
       todo.text = text;
     }
     if (req.file) {
       todo.mediaUrl = req.file.path;
-    }
-    if (req.file) {
       mediaUrl = req.file.path;
       if (req.file.mimetype.startsWith("image")) {
         todo.mediaType = "image";
