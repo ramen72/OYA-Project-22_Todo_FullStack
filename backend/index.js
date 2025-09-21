@@ -18,7 +18,13 @@ app.use(
     credentials: true,
   })
 );
+
+// For Read and Write JSON File/Data
 app.use(express.json());
+
+// For preview uploaded file from upload folder using browser
+app.use("/uploads", express.static("uploads"));
+
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);

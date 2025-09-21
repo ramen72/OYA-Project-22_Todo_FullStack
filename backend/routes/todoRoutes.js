@@ -1,20 +1,30 @@
 const express = require("express");
-const { createTodoController } = require("../controllers/todoController");
+const multer = require("multer");
 const router = express.Router();
-// const {
-//   registrationController,
-//   loginController,
-//   verifyTokenController,
-//   refreshController,
-//   forgotPasswordController,
-//   resetPasswordController,
-// } = require("../controllers/authController");
+const { createTodoController } = require("../controllers/todoController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-router.post("/createTodo", createTodoController);
-// router.get("/verify/:token", verifyTokenController);
-// router.post("/login", loginController);
-// router.post("/refresh", refreshController);
-// router.post("/forgot-password", forgotPasswordController);
-// router.post("/reset-password/:token", resetPasswordController);
+// ******************* File Upload with Multer ************************
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// *********************************************************************
+
+// Configure Routes
+router.post(
+  "/createTodo",
+  authMiddleware,
+  upload.single("todoImage"), //File upload with Multer
+  createTodoController
+);
 
 module.exports = router;
