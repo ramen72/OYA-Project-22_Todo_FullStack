@@ -1,5 +1,6 @@
 const todoModel = require("../models/todoModel");
 
+// ******************************* Create Todo Controller *************************************************************
 let createTodoController = async (req, res) => {
   // console.log(req);
   try {
@@ -16,7 +17,7 @@ let createTodoController = async (req, res) => {
     }
     const todo = new todoModel({
       // req.userInfo.id comes from "authMiddleware.js"
-      userId: req.userInfo.id,
+      userDetails: req.userInfo.id,
       text, // text: text
       mediaUrl, // mediaUrl: mediaUrl
       mediaType, // mediaType: mediaType
@@ -27,4 +28,44 @@ let createTodoController = async (req, res) => {
     res.send({ error: error.message });
   }
 };
-module.exports = { createTodoController };
+// ********************************************************************************************
+
+// ******************************* Get All data controller *************************************************************
+let getAllTodos = async (req, res) => {
+  const todos = await todoModel
+    .find({ userDetails: req.userInfo.id })
+    .populate("userDetails"); // populate("userDetails") generate all data based on userDetails when need all data of user then we should use populate(), otherwise not.
+  res.send({ data: todos });
+};
+// ********************************************************************************************
+
+// ******************************* Todo Update controller *************************************************************
+let updateTodo = async (req, res) => {
+  let updateId = req.params;
+  let userId = req.userInfo.id;
+  try {
+    const { text } = req.body;
+    const todo = await todoModel.findOne({ _id: updateId, userId: userId });
+    if (!todo) return res.send({ error: `Todo not found..!` });
+    if (text) {
+      todo.text = text;
+    }
+    if (req.file) {
+      todo.mediaUrl = req.file.path;
+    }
+    if (req.file) {
+      mediaUrl = req.file.path;
+      if (req.file.mimetype.startsWith("image")) {
+        todo.mediaType = "image";
+      } else if (req.file.mimetype.startsWith("video")) {
+        todo.mediaType = "video";
+      }
+    }
+    await todo.save();
+    res.send({ message: `Todo is updated successfully.` });
+  } catch (error) {
+    res.send({ error: error });
+  }
+};
+// ********************************************************************************************
+module.exports = { createTodoController, getAllTodos, updateTodo };

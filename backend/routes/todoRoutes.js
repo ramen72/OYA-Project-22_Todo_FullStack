@@ -1,7 +1,11 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const { createTodoController } = require("../controllers/todoController");
+const {
+  createTodoController,
+  getAllTodos,
+  updateTodo,
+} = require("../controllers/todoController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 // ******************* File Upload with Multer ************************
@@ -25,6 +29,13 @@ router.post(
   authMiddleware,
   upload.single("todoImage"), //File upload with Multer
   createTodoController
+);
+router.get("/getall-todos", authMiddleware, getAllTodos);
+router.put(
+  "/update-todo/:id",
+  authMiddleware,
+  upload.single("todoImage"), //For file update
+  updateTodo
 );
 
 module.exports = router;
