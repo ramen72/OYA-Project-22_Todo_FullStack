@@ -60,16 +60,37 @@ let updateTodo = async (req, res) => {
       todo.text = text;
     }
     if (req.file) {
-      todo.mediaUrl = req.file.path;
-      mediaUrl = req.file.path;
-      if (req.file.mimetype.startsWith("image")) {
-        todo.mediaType = "image";
-      } else if (req.file.mimetype.startsWith("video")) {
-        todo.mediaType = "video";
+      // Delete the old file if exists
+      // if (todo.mediaUrl) {
+      //   try {
+      //     fs.unlinkSync(path.resolve(todo.mediaUrl)); // Ensure the correct path
+      //   } catch (error) {
+      //     return res.send({
+      //       message: `Failed to delete old media file`,
+      //       error: error,
+      //     });
+      //   }
+      // }
+      // // Update new file path and type
+      // todo.mediaUrl = req.file.path;
+      // if (req.file.mimetype.startsWith("image")) {
+      //   todo.mediaType = "image";
+      // } else if (req.file.mimetype.startsWith("video")) {
+      //   todo.mediaType = "video";
+      // }
+      // ********************************************
+      if (req.file) {
+        todo.mediaUrl = req.file.path;
+        mediaUrl = req.file.path;
+        if (req.file.mimetype.startsWith("image")) {
+          todo.mediaType = "image";
+        } else if (req.file.mimetype.startsWith("video")) {
+          todo.mediaType = "video";
+        }
       }
+      await todo.save();
+      res.send({ message: `Todo is updated successfully.` });
     }
-    await todo.save();
-    res.send({ message: `Todo is updated successfully.` });
   } catch (error) {
     res.send({ error: error });
   }
