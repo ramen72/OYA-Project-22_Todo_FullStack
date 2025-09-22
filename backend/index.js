@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const databaseConfig = require("./config/databaseConfig");
 const authRoutes = require("./routes/authRoutes");
 const todoRoutes = require("./routes/todoRoutes");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +27,25 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 app.use(cookieParser());
+
+const swaggerOption = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "MERN Stack Todo app",
+      version: "1.0.0",
+      description: "This is the fullstack todo app",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000/api",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+const swaggerspec = swaggerJsdoc(swaggerOption);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerspec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/todo", todoRoutes);
