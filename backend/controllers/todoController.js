@@ -61,32 +61,22 @@ let updateTodo = async (req, res) => {
     }
     if (req.file) {
       // Delete the old file if exists
-      // if (todo.mediaUrl) {
-      //   try {
-      //     fs.unlinkSync(path.resolve(todo.mediaUrl)); // Ensure the correct path
-      //   } catch (error) {
-      //     return res.send({
-      //       message: `Failed to delete old media file`,
-      //       error: error,
-      //     });
-      //   }
-      // }
-      // // Update new file path and type
-      // todo.mediaUrl = req.file.path;
-      // if (req.file.mimetype.startsWith("image")) {
-      //   todo.mediaType = "image";
-      // } else if (req.file.mimetype.startsWith("video")) {
-      //   todo.mediaType = "video";
-      // }
-      // ********************************************
-      if (req.file) {
-        todo.mediaUrl = req.file.path;
-        mediaUrl = req.file.path;
-        if (req.file.mimetype.startsWith("image")) {
-          todo.mediaType = "image";
-        } else if (req.file.mimetype.startsWith("video")) {
-          todo.mediaType = "video";
+      if (todo.mediaUrl) {
+        try {
+          fs.unlinkSync(path.resolve(todo.mediaUrl)); // Ensure the correct path
+        } catch (error) {
+          return res.send({
+            message: `Failed to delete old media file`,
+            error: error,
+          });
         }
+      }
+      // Update new file path and type
+      todo.mediaUrl = req.file.path;
+      if (req.file.mimetype.startsWith("image")) {
+        todo.mediaType = "image";
+      } else if (req.file.mimetype.startsWith("video")) {
+        todo.mediaType = "video";
       }
       await todo.save();
       res.send({ message: `Todo is updated successfully.` });
@@ -96,4 +86,39 @@ let updateTodo = async (req, res) => {
   }
 };
 // ********************************************************************************************
-module.exports = { createTodoController, getAllTodos, updateTodo };
+// ******************************* Todo Delete controller *************************************
+let deleteTodo = async (req, res) => {
+  let deleteId = req.params.id;
+  let userId = req.userInfo.id;
+
+  console.log(deleteId, userId);
+  try {
+    const todo = await todoModel.findOne({
+      _id: deleteId,
+      userDetails: userId,
+    });
+
+    if (!todo) {
+      return res.send({ error: `Todo not found..!` });
+    } else {
+      // return res.send(todo);
+      if (todo.mediaUrl) {
+        try {
+          fs.unlinkSync(path.resolve(todo.mediaUrl)); // Ensure the correct path
+        } catch (error) {
+          return res.send({
+            message: `Failed to delete media file`,
+            error: error,
+          });
+        }
+      }
+      await todoModel.findByIdAndDelete(deleteId);
+    }
+    res.send({ message: `Todo is deleted successfully.` });
+  } catch (error) {
+    res.send({ error: error });
+  }
+};
+
+// ********************************************************************************************
+module.exports = { createTodoController, getAllTodos, updateTodo, deleteTodo };

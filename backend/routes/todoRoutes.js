@@ -5,6 +5,7 @@ const {
   createTodoController,
   getAllTodos,
   updateTodo,
+  deleteTodo,
 } = require("../controllers/todoController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -37,5 +38,6 @@ router.put(
   upload.single("todoImage"), //For file update
   updateTodo
 );
+router.delete("/delete-todo/:id", authMiddleware, deleteTodo);
 
 module.exports = router;
