@@ -90,8 +90,6 @@ let updateTodo = async (req, res) => {
 let deleteTodo = async (req, res) => {
   let deleteId = req.params.id;
   let userId = req.userInfo.id;
-
-  console.log(deleteId, userId);
   try {
     const todo = await todoModel.findOne({
       _id: deleteId,
