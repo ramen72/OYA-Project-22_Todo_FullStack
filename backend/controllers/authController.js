@@ -103,24 +103,37 @@ let registrationController = async (req, res) => {
       }
     );
     const verifyLink = `${process.env.CLIENT_URL}/verify/${verificationToken}`;
-    try {
-      await transporter.sendMail({
-        from: process.env.SENDING_MAIL_ID,
-        to: user.email,
-        subject: `${user.email} Please Verify your Email`,
-        text: "Hello", // plain‑text body
-        html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
-      });
-      res.send({
-        message: `Registration Successfully Done. Please check your mail for verification code.`,
-      });
-    } catch (error) {
-      await User.findOneAndDelete({ email: email });
-      res.send({
-        message: "Failed to send Verification mail to your mail.",
-        message: error,
-      });
-    }
+
+    await transporter.sendMail({
+      from: process.env.SENDING_MAIL_ID,
+      to: user.email,
+      subject: `${user.email} Please Verify your Email`,
+      text: "Hello", // plain‑text body
+      html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
+    });
+    res.send({
+      message: `Registration Successfully Done. Please check your mail for verification code.`,
+    });
+
+    // RollBack (if message dose not send registration will not complete.)
+    // try {
+    //   await transporter.sendMail({
+    //     from: process.env.SENDING_MAIL_ID,
+    //     to: user.email,
+    //     subject: `${user.email} Please Verify your Email`,
+    //     text: "Hello", // plain‑text body
+    //     html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
+    //   });
+    //   res.send({
+    //     message: `Registration Successfully Done. Please check your mail for verification code.`,
+    //   });
+    // } catch (error) {
+    //   await User.findOneAndDelete({ email: email });
+    //   res.send({
+    //     message: "Failed to send Verification mail to your mail.",
+    //     message: error,
+    //   });
+    // }
   } catch (error) {
     console.log(`While trying to save data in database: ${error}`);
   }
