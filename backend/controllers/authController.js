@@ -1,32 +1,13 @@
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 const User = require("../models/userModel");
-const nodemailer = require("nodemailer");
 const Queue = require("bull");
-
-// Email Configuration
-const transporter = nodemailer.createTransport({
-  host: "mail.devsramen.com",
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.SENDING_MAIL_ID,
-    pass: process.env.SENDING_MAIL_PASSWORD,
-  },
-});
+const sendEmail = require("../utilities/sendEmail");
 
 // Configure Email Queues
 const emailQueue = new Queue("emails", {
   redis: { host: "localhost", port: 6379 },
 });
-
-// const info = await transporter.sendMail({
-//   from: "TODO APP",
-//   to: email,
-//   subject: "Verify your Email",
-//   text: "Hello", // plain‑text body
-//   html: `<h2>Your Verification Code is ${verificationCode}</h2> <br> <a href='#'>Click</a>`, // HTML body
-// });
 
 // **********************
 const patternForEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -110,12 +91,11 @@ let registrationController = async (req, res) => {
     );
     const verifyLink = `${process.env.CLIENT_URL}/verify/${verificationToken}`;
 
-    await transporter.sendMail({
-      from: process.env.SENDING_MAIL_ID,
+    await sendEmail({
       to: user.email,
       subject: `${user.email} Please Verify your Email`,
-      text: "Hello", // plain‑text body
-      html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
+      text: "Hello",
+      html: `<h3>Click to verify your Account: <a href=${verifyLink}>Verify Your Email</a></h3>`,
     });
     res.send({
       message: `Registration Successfully Done. Please check your mail for verification code.`,
@@ -123,13 +103,12 @@ let registrationController = async (req, res) => {
 
     // RollBack (if message dose not send registration will not complete.)
     // try {
-    //   await transporter.sendMail({
-    //     from: process.env.SENDING_MAIL_ID,
-    //     to: user.email,
-    //     subject: `${user.email} Please Verify your Email`,
-    //     text: "Hello", // plain‑text body
-    //     html: `<h3>click to verify your Account : <a href=${verifyLink}>Verify Your Email.</a></h3>`,
-    //   });
+    // await sendEmail({
+    //   to: user.email,
+    //   subject: `${user.email} Please Verify your Email`,
+    //   text: "Hello",
+    //   html: `<h3>Click to verify your Account: <a href=${verifyLink}>Verify Your Email</a></h3>`,
+    // });
     //   res.send({
     //     message: `Registration Successfully Done. Please check your mail for verification code.`,
     //   });
@@ -239,10 +218,8 @@ let forgotPasswordController = async (req, res) => {
   const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
   try {
-    await transporter.sendMail({
-      from: process.env.SENDING_MAIL_ID,
+    await sendEmail({
       to: userExists.email,
-      // to: user.email,
       subject: `Reset Password`,
       html: `<h3>click to Reset Password : <a href=${resetLink}>Reset Password</a></h3>`,
     });
