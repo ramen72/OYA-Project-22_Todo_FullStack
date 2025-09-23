@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 const User = require("../models/userModel");
 const nodemailer = require("nodemailer");
+const Queue = require("bull");
 
 // Email Configuration
 const transporter = nodemailer.createTransport({
@@ -12,6 +13,11 @@ const transporter = nodemailer.createTransport({
     user: process.env.SENDING_MAIL_ID,
     pass: process.env.SENDING_MAIL_PASSWORD,
   },
+});
+
+// Configure Email Queues
+const emailQueue = new Queue("emails", {
+  redis: { host: "localhost", port: 6379 },
 });
 
 // const info = await transporter.sendMail({
