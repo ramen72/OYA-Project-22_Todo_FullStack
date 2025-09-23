@@ -28,7 +28,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use(cookieParser());
 
-const swaggerOption = {
+const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
@@ -44,7 +44,8 @@ const swaggerOption = {
   },
   apis: ["./routes/*.js"],
 };
-const swaggerspec = swaggerJsdoc(swaggerOption);
+const swaggerspec = swaggerJsdoc(swaggerOptions);
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerspec));
 
 app.use("/api/auth", authRoutes);
