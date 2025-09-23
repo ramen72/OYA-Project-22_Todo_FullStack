@@ -209,7 +209,6 @@ let forgotPasswordController = async (req, res) => {
       expiresIn: "15m",
     }
   );
-  console.log(resetToken);
   const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
   try {
