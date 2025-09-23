@@ -9,7 +9,8 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
   const { message, error } = useSelector((state) => state.auth);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     dispatch(forgot(formData));
   };
 
@@ -17,7 +18,7 @@ const ForgotPassword = () => {
     <>
       <h1 className={`font-bold text-2xl text-center mb-6`}>Forgot Password</h1>
       <form
-        action="POST"
+        method="POST"
         onSubmit={handleSubmit}
         className={`w-1/2 p-10 mt-10 mx-auto bg-gray-200 rounded`}
       >

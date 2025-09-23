@@ -11,7 +11,8 @@ const Login = () => {
   const { message, error, loading } = useSelector((state) => state.auth);
   console.log(loading);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     dispatch(login(formData));
   };
 
@@ -19,7 +20,7 @@ const Login = () => {
     <>
       <h1 className={`font-bold text-2xl text-center mb-6`}>Login</h1>
       <form
-        action="POST"
+        method="POST"
         onSubmit={handleSubmit}
         className={`w-1/2 p-10 mt-10 mx-auto bg-gray-200 rounded`}
       >

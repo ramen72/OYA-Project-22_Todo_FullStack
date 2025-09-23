@@ -12,8 +12,8 @@ const ResetPassword = () => {
   const dispatch = useDispatch();
   const { message, error } = useSelector((state) => state.auth);
 
-  const handleSubmit = () => {
-    console.log(formData.password, token);
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (token) {
       dispatch(reset({ token, formData }));
     }
