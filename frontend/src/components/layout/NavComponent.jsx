@@ -48,6 +48,14 @@ const NavComponent = () => {
               Reset Password
             </Link>
           </li>
+          <li>
+            <Link
+              to={"#"}
+              className={`inline-block px-5 py-3 rounded transition-all duration-300 hover:bg-green-200`}
+            >
+              CreateTodo
+            </Link>
+          </li>
         </ul>
       </div>
     </>
