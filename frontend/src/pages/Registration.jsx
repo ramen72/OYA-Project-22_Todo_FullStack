@@ -20,7 +20,9 @@ const Registration = () => {
 
   return (
     <>
-      <h1 className={`font-bold text-2xl text-center mb-6`}>Registration</h1>
+      <h1 className={`font-bold text-2xl text-center mb-6 mt-20`}>
+        Registration
+      </h1>
       <form
         method="POST"
         onSubmit={handleSubmit}

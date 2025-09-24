@@ -21,7 +21,9 @@ const ResetPassword = () => {
 
   return (
     <>
-      <h1 className={`font-bold text-2xl text-center mb-6`}>Reset Password</h1>
+      <h1 className={`font-bold text-2xl text-center mb-6 mt-20`}>
+        Reset Password
+      </h1>
       <form
         action="POST"
         onSubmit={handleSubmit}
