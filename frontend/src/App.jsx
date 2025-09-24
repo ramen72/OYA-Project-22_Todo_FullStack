@@ -1,7 +1,5 @@
 import "./assets/css/tailwind.css";
-import api from "./api";
 import { Routes, Route } from "react-router";
-import { useEffect } from "react";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -10,11 +8,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import CommonLayout from "./components/layout/CommonLayout";
 
 function App() {
-  // useEffect(() => {
-  //   api.get(`/users`).then((data) => {
-  //     // console.log(data.data);
-  //   });
-  // });
   return (
     <>
       <Routes>
