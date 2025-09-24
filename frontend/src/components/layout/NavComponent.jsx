@@ -10,7 +10,7 @@ const NavComponent = () => {
         >
           <li>
             <Link
-              to={"/"}
+              to={"/registration"}
               className={`inline-block px-5 py-3 rounded transition-all duration-300 hover:bg-green-200`}
             >
               Registration
@@ -22,14 +22,6 @@ const NavComponent = () => {
               className={`inline-block px-5 py-3 rounded transition-all duration-300 hover:bg-green-200`}
             >
               Login
-            </Link>
-          </li>
-          <li>
-            <Link
-              to={"/verify/:token"}
-              className={`inline-block px-5 py-3 rounded transition-all duration-300 hover:bg-green-200`}
-            >
-              verify
             </Link>
           </li>
           <li>

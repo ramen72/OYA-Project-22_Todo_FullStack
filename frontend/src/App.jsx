@@ -6,6 +6,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import CommonLayout from "./components/layout/CommonLayout";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<Registration />} /> */}
         <Route element={<CommonLayout />}>
-          <Route path="/" element={<Registration />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/registration" element={<Registration />} />
           <Route path="/login" element={<Login />} />
           <Route path={`/verify/:token`} element={<VerifyEmail />} />
           <Route path={`/forgot-password`} element={<ForgotPassword />} />
