@@ -16,6 +16,12 @@ const Registration = () => {
     e.preventDefault();
     console.log(formData);
     dispatch(registration(formData));
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
   };
 
   return (
@@ -38,6 +44,7 @@ const Registration = () => {
           <input
             className={`border ml-5 p-2 my-1 w-3/5`}
             type="text"
+            value={formData.username}
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
@@ -54,6 +61,7 @@ const Registration = () => {
           <input
             className={`border ml-5 p-2 my-1 w-3/5`}
             type="email"
+            value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
@@ -70,6 +78,7 @@ const Registration = () => {
           <input
             className={`border ml-5 p-2 my-1 w-3/5`}
             type="password"
+            value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
@@ -86,6 +95,7 @@ const Registration = () => {
           <input
             className={`border ml-5 p-2 my-1 w-3/5`}
             type="password"
+            value={formData.confirmPassword}
             onChange={(e) =>
               setFormData({ ...formData, confirmPassword: e.target.value })
             }
