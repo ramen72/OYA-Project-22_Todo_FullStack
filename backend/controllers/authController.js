@@ -6,7 +6,7 @@ const sendEmail = require("../utilities/sendEmail");
 
 // Configure Email Queues
 const emailQueue = new Queue("emails", {
-  redis: { host: "localhost", port: 6379 },
+  redis: { host: "localhost", port: 6379, username: "sfs" },
 });
 
 // **********************

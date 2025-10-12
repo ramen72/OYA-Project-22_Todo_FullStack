@@ -30,7 +30,6 @@ let createTodoController = async (req, res) => {
     res.send({ error: error.message });
   }
 };
-// ********************************************************************************************
 
 // ******************************* Get All data controller *************************************************************
 let getAllTodos = async (req, res) => {
@@ -39,7 +38,6 @@ let getAllTodos = async (req, res) => {
     .populate("userDetails"); // populate("userDetails") generate all data based on userDetails when need all data of user then we should use populate(), otherwise not.
   res.send({ data: todos });
 };
-// ********************************************************************************************
 
 // ******************************* Todo Update controller *************************************************************
 let updateTodo = async (req, res) => {
@@ -85,7 +83,7 @@ let updateTodo = async (req, res) => {
     res.send({ error: error });
   }
 };
-// ********************************************************************************************
+
 // ******************************* Todo Delete controller *************************************
 let deleteTodo = async (req, res) => {
   let deleteId = req.params.id;
@@ -118,5 +116,4 @@ let deleteTodo = async (req, res) => {
   }
 };
 
-// ********************************************************************************************
 module.exports = { createTodoController, getAllTodos, updateTodo, deleteTodo };
