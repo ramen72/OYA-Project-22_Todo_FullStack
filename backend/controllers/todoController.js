@@ -33,10 +33,37 @@ let createTodoController = async (req, res) => {
 
 // ******************************* Get All data controller *************************************************************
 let getAllTodos = async (req, res) => {
-  const todos = await todoModel
-    .find({ userDetails: req.userInfo.id })
-    .populate("userDetails"); // populate("userDetails") generate all data based on userDetails when need all data of user then we should use populate(), otherwise not.
-  res.send({ data: todos });
+  // const todos = await todoModel
+  //   .find({ userDetails: req.userInfo.id })
+  //   .populate("userDetails"); // populate("userDetails") generate all data based on userDetails when need all data of user then we should use populate(), otherwise not.
+  // res.send({ data: todos });
+
+  try {
+    const { page = 1, limit = 10, type, search } = req.query;
+    const query = { userDetails: req.userInfo.id };
+    if (type) {
+      query.mediaType = type;
+    }
+    if (search) {
+      query.text = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    const todos = await todoModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * Number(limit))
+      .limit(Number(limit));
+    res.send({
+      page: Number(page),
+      limit: Number(limit),
+      todos,
+    });
+  } catch (error) {
+    res.send({ error: error });
+  }
 };
 
 // ******************************* Todo Update controller *************************************************************
