@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const databaseConfig = require("./config/databaseConfig");
 const authRoutes = require("./routes/authRoutes");
 const todoRoutes = require("./routes/todoRoutes");
+const healthRoutes = require("./routes/healthRout");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const { rateLimit } = require("express-rate-limit");
@@ -62,6 +63,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerspec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/todo", todoRoutes);
+app.use("/api/check", healthRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running http://localhost:${PORT}`);
