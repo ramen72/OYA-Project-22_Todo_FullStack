@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { registration } from "./../features/auth/authSlice";
+import { Link, useNavigate } from "react-router";
 
 const Registration = () => {
+  const navigate = useNavigate();
+  // Navigate to to Create Todos
+  useEffect(() => {
+    if (localStorage.getItem("userInfo")) {
+      navigate("/create-todo");
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -32,7 +41,7 @@ const Registration = () => {
       <form
         method="POST"
         onSubmit={handleSubmit}
-        className={`w-1/2 p-10 mt-10 mx-auto bg-gray-200 rounded`}
+        className={`w-[55%] p-10 mt-10 mx-auto bg-gray-200 rounded`}
       >
         <div>
           <label
@@ -101,6 +110,15 @@ const Registration = () => {
             }
             placeholder="Enter your password here..."
           />
+        </div>
+        <div className={`flex items-center gap-x-2 pl-48`}>
+          <p>Already I have account</p>
+          <Link
+            to={"/login"}
+            className={`font-bold text-lg text-blue-600 hover:text-blue-800`}
+          >
+            Login
+          </Link>
         </div>
         <div className={`flex justify-end items-center mt-3`}>
           <button
