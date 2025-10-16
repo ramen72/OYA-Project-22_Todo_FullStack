@@ -14,6 +14,7 @@ let accessToken = localStorage.getItem("userInfo")
 export const setToken = (token) => {
   accessToken = token;
 };
+
 // Registration
 api.interceptors.request.use(async (config) => {
   console.log("this is before API Call.");

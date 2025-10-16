@@ -5,6 +5,7 @@ import api from "../api";
 
 const CreateTodoPage = () => {
   const [todo, setTodo] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -24,7 +25,7 @@ const CreateTodoPage = () => {
       .get("http://localhost:3000/api/todo/getall-todos", {
         headers: {
           Authorization: `bearer ${
-            localStorage.getItem("userInfo").accessToken
+            JSON.parse(localStorage.getItem("userInfo")).accessToken
           }`,
         },
       })
@@ -43,12 +44,16 @@ const CreateTodoPage = () => {
         {
           headers: {
             Authorization: `bearer ${
-              localStorage.getItem("userInfo").accessToken
+              JSON.parse(localStorage.getItem("userInfo")).accessToken
             }`,
           },
         }
       )
       .then((data) => {
+        setSuccessMessage(data.data.message);
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 1000);
         console.log(data);
       });
   };
@@ -74,6 +79,7 @@ const CreateTodoPage = () => {
         >
           Create
         </button>
+        {successMessage && <h4>{successMessage}</h4>}
       </div>
     </>
   );

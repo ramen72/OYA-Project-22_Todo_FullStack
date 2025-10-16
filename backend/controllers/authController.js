@@ -150,7 +150,7 @@ let loginController = async (req, res) => {
   if (!userExists) {
     return res.send({ error: `Invalid Credential ` });
   } else if (!userExists.isVerified) {
-    return res.send({ error: `Please verify your email for login ` });
+    return res.send({ error: `Please verify your email for login` });
   }
 
   const isPasswordMatch = await bcryptjs.compare(password, userExists.password);
